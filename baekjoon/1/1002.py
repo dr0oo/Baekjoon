@@ -21,29 +21,45 @@ r1, r2는 10,000보다 작거나 같은 자연수이다.
 
 '''
 >>>출력
-각 테스트 케이스마다 류재명이 있을 수 있는 위치의 수를 출력한다. 만약 류재명이 있을 수 있는 위치의 개수가 무한대일 경우에는 -1을 출력한다.
+각 테스트 케이스마다 류재명이 있을 수 있는 위치의 수를 출력한다.
+만약 류재명이 있을 수 있는 위치의 개수가 무한대일 경우에는 -1을 출력한다.
 '''
 
+'''
+>>>해설
+조규현의 위치 (x1, y1)로부터 r1만큼 떨어진 거리에 있는 점의 집합은
+(x-x1)**2+(y-y1)**2=r**2 이 원의 방정식,
+즉, (x1, y1)을 중심으로 하고, 반지름의 길이가 r1인 원의 방정식
+백승환도 마찬가지
 
+류재명이 있을 수 있는 위치는
+조규현의 원의방정식과 백승환의 원의방정식을 둘다 충족하는 (x,y),
+
+구하고자 하는 것은 (x,y)가 몇개 있인지,
+두 원의방정식을 동시에 만족하는 해의 개수가 몇개인지를 찾는 것
+결국 두 원의 접점이 몇개인지 찾는 것
+'''
 
 T = int(sys.stdin.readline())
 count = []
 
-
-
 for i in range(T):
     x1, y1, r1, x2, y2, r2 = map(int, sys.stdin.readline().split(' '))
-    if (-10000 <= x1 and y1 and x2 and y2 <= 10000) and (r1 and r2 <=10000):
-        d = math.sqrt((x2-x1)**2+(y2-y1)**2)
-        if d == (r1+r2) or d == abs(r2-r1):
-            count.append(1)
-        elif d == 0 and r1 == r2:
+
+    d = math.sqrt((x2-x1)**2+(y2-y1)**2) #조규현과 백승환의 euclidean distance (원의 중심간의 거리)
+    
+    if d == 0: #조규현과 백승환의 위치가 같은 경우라면
+        if r1 == r2: #반지름이 같을 경우 두 원이 완전히 일치하므로 무한대
             count.append(-1)
-        else:
-            if d > (r1+r2) and d < abs(r2-r1):
-                count.append(0)
-            elif d < (r1+r2) and d > abs(r2-r1):
-                count.append(2)
+        else: #반지름이 다를경우 누군가가 포함되는것이라서 0개
+            count.append(0)
+    else:
+        if d == (r1+r2) or d == abs(r2-r1): #외접 또는 내접
+            count.append(1)
+        elif d > (r1+r2) or d < abs(r2-r1): #밖에서 아예 안만나는경우, 하나에 포함되는 경우
+            count.append(0) 
+        elif d < (r1+r2) and d > abs(r2-r1): #겹치면서 
+            count.append(2)
 
 for cnt in count:
     print(cnt)
